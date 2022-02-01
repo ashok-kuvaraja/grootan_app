@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "726115070656",
+    "project_id": "userdetails-66501",
+    "storage_bucket": "userdetails-66501.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:726115070656:android:e582ef711cb04ca82d7325",
+        "android_client_info": {
+          "package_name": "com.example.grootan_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "726115070656-u96suimtcf9s0ak99ec6v0qej1prfivg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.grootan_app",
+            "certificate_hash": "b5bdd4679523c6d3cdf530d69c675e156804c754"
+          }
+        },
+        {
+          "client_id": "726115070656-uvk8gel2md03pr7jv111ocfv1oq08o40.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkoCCW2zVBsq_ZmzSwBSc9YjlSLdQ94eo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "726115070656-uvk8gel2md03pr7jv111ocfv1oq08o40.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
