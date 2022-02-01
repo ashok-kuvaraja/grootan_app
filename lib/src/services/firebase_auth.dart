@@ -51,10 +51,12 @@ class FirebaseAuthService {
     }
 
     void onTimeOut(String verificationID) async {
-      EasyLoading.showError('Time out. Please resend the OTP',
-          duration: const Duration(seconds: 2));
-      EasyLoading.dismiss();
-      model.isCodeSent = false;
+      if (currentUserID.isNotEmpty) {
+        EasyLoading.showError('Time out. Please resend the OTP',
+            duration: const Duration(seconds: 2));
+        EasyLoading.dismiss();
+        model.isCodeSent = false;
+      }
     }
 
     EasyLoading.show(status: 'Verifing phone number');
