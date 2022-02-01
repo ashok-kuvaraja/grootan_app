@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 import '/src/models/user_details.dart';
 import '../services/firebase_auth.dart';
 import '../services/firebase_store.dart';
