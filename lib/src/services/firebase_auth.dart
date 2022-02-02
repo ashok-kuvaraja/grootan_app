@@ -14,30 +14,34 @@ class FirebaseAuthService {
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  String _verificationID = '';
-
   int? _resendToken;
+
+  String _verificationID = '';
 
   String get currentUserID => _firebaseAuth.currentUser?.uid ?? '';
 
   Future<void> verifyPhoneNumber(
-      {required String phoneNumber, required LoginViewModel model}) async {
+      {required BuildContext context,
+      required bool isResent,
+      required String phoneNumber,
+      required LoginViewModel model}) async {
     if (model.isCodeSent) {
       model.isCodeSent = false;
     }
 
     void onCodeSent(String verificationId, int? forceResendingToken) {
       _verificationID = verificationId;
-      _resendToken = forceResendingToken;
+      if (!isResent) {
+        _resendToken = forceResendingToken;
+      }
       model.isCodeSent = true;
       EasyLoading.showSuccess('OTP has been sent successfully');
       EasyLoading.dismiss();
     }
 
     void onVerificationFailed(FirebaseAuthException e) {
-      EasyLoading.showError('${e.code}. Please try again');
-      model.isCodeSent = false;
       EasyLoading.dismiss();
+      LoginViewModel.instance.showAlertDialog(context, e);
     }
 
     void onVerificationCompleted(PhoneAuthCredential credential) async {
@@ -50,25 +54,16 @@ class FirebaseAuthService {
       }
     }
 
-    void onTimeOut(String verificationID) async {
-      if (currentUserID.isNotEmpty) {
-        EasyLoading.showError('Time out. Please resend the OTP',
-            duration: const Duration(seconds: 2));
-        EasyLoading.dismiss();
-        model.isCodeSent = false;
-      }
-    }
-
     EasyLoading.show(status: 'Verifing phone number');
 
     await _firebaseAuth.verifyPhoneNumber(
         codeSent: onCodeSent,
         phoneNumber: "+91$phoneNumber",
-        forceResendingToken: _resendToken,
-        timeout: const Duration(seconds: 30),
+        forceResendingToken: isResent ? _resendToken : null,
+        timeout: const Duration(minutes: 1),
         verificationFailed: onVerificationFailed,
         verificationCompleted: onVerificationCompleted,
-        codeAutoRetrievalTimeout: onTimeOut);
+        codeAutoRetrievalTimeout: (_) {});
   }
 
   Future<void> verifyOTP(BuildContext context, String otp) async {
@@ -92,13 +87,13 @@ class FirebaseAuthService {
         EasyLoading.showError("User doesn't exist");
         EasyLoading.dismiss();
       }
-    } on Exception catch (_) {
+    } on FirebaseAuthException catch (e) {
       EasyLoading.dismiss();
-      LoginViewModel.instance.showOTPDialog(context);
+      LoginViewModel.instance.showAlertDialog(context, e);
     }
   }
 
-  Future<void> signOut() async {
+  Future<void> userSignOut() async {
     await _firebaseAuth.signOut();
   }
 }

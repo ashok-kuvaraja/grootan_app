@@ -30,7 +30,7 @@ class LastLoginViewModel extends ChangeNotifier {
         case 'Yesterday':
           DateTime yesterday = today.subtract(const Duration(days: 1));
           return uploadTime.isBefore(today) && uploadTime.isAfter(yesterday);
-        case 'Others':
+        case 'Other':
           DateTime yesterday = today.subtract(const Duration(days: 1));
           return uploadTime.isBefore(yesterday);
         default:

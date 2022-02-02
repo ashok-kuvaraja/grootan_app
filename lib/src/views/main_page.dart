@@ -12,7 +12,6 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isSignedIn = FirebaseAuthService.instance.currentUserID.isEmpty;
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'Grootan App',
       home: isSignedIn ? const LoginPage() : const PluginPage(),
       builder: EasyLoading.init(),

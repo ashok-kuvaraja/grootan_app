@@ -17,7 +17,7 @@ class FirebaseFireStoreService {
 
   String get _currentUserID => FirebaseAuthService.instance.currentUserID;
 
-  Future<void> createUser(UserDetails details) async {
+  Future<void> addUserDetails(UserDetails details) async {
     final DocumentReference<Map> reference =
         _firestore.collection(_collectionName).doc(_currentUserID);
     final DocumentSnapshot<Map> snapshot = await reference.get();
@@ -38,7 +38,8 @@ class FirebaseFireStoreService {
     }
   }
 
-  Future<void> updateUser(String qrDownloadLink, int randomNumber) async {
+  Future<void> updateUserDetails(
+      String qrDownloadLink, int randomNumber) async {
     final DocumentReference<Map> reference =
         _firestore.collection(_collectionName).doc(_currentUserID);
     final DocumentSnapshot<Map> snapshot = await reference.get();

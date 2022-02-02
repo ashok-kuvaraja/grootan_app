@@ -33,7 +33,7 @@ class PluginViewModel {
     final String qrCodeLink = await _getQRDownloadLink();
 
     await FirebaseFireStoreService.instance
-        .updateUser(qrCodeLink, randomNumber);
+        .updateUserDetails(qrCodeLink, randomNumber);
   }
 
   void _generateRandomNumber() {

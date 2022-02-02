@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -52,7 +53,7 @@ class LoginViewModel extends ChangeNotifier {
         userIP: userIP,
         time: currentDate.toString());
 
-    await FirebaseFireStoreService.instance.createUser(details);
+    await FirebaseFireStoreService.instance.addUserDetails(details);
   }
 
   Future<String> _findIPAddress() async {
@@ -74,7 +75,7 @@ class LoginViewModel extends ChangeNotifier {
       try {
         currentLocation = await location.getLocation();
       } on PlatformException catch (_) {
-        EasyLoading.showInfo('Please enable the location',
+        EasyLoading.showInfo('Allow permission to access location',
             duration: const Duration(seconds: 2));
         EasyLoading.dismiss();
         currentLocation = null;
@@ -90,7 +91,7 @@ class LoginViewModel extends ChangeNotifier {
   }
 
   Future<void> signOut() async {
-    return await FirebaseAuthService.instance.signOut();
+    return await FirebaseAuthService.instance.userSignOut();
   }
 
   Future<void> onSubmit(BuildContext context) async {
@@ -103,7 +104,10 @@ class LoginViewModel extends ChangeNotifier {
 
       if (!isCodeSent) {
         await FirebaseAuthService.instance.verifyPhoneNumber(
-            model: this, phoneNumber: phoneNumberController.text.trim());
+            isResent: false,
+            context: context,
+            model: this,
+            phoneNumber: phoneNumberController.text.trim());
       } else {
         await FirebaseAuthService.instance
             .verifyOTP(context, otpController.text.trim());
@@ -111,11 +115,15 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> showOTPDialog(BuildContext context) async {
+  Future<void> showAlertDialog(
+      BuildContext context, FirebaseAuthException e) async {
     void handleResendOTPButtonTap() async {
       otpController.clear();
       await FirebaseAuthService.instance.verifyPhoneNumber(
-          model: this, phoneNumber: phoneNumberController.text.trim());
+          isResent: true,
+          context: context,
+          model: this,
+          phoneNumber: phoneNumberController.text.trim());
       Navigator.pop(context);
     }
 
@@ -143,16 +151,14 @@ class LoginViewModel extends ChangeNotifier {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Invalid OTP',
-              ),
+              Text(e.code),
               IconButton(
                   onPressed: handleCancelButtonTap,
                   icon: const Icon(Icons.cancel)),
             ],
           ),
-          content: const Text(
-            'Sorry! You have entered the invalid OTP.',
+          content: Text(
+            e.message ?? 'Sorry! You have entered the invalid OTP.',
           ),
           actions: [
             _buildButton('Resend OTP', handleResendOTPButtonTap),
